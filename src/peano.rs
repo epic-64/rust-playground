@@ -3,18 +3,18 @@ use std::cmp::Ordering::{Equal, Greater, Less};
 use Peano::{Succ, Zero};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-enum Peano {
+pub enum Peano {
     Zero,
     Succ(Box<Peano>),
 }
 
 #[derive(Debug, PartialEq, Eq)]
-enum PeanoError {
+pub enum PeanoError {
     DivisionByZero,
 }
 
 impl Peano {
-    fn from_int(n: i64) -> Peano {
+    pub fn from_int(n: i64) -> Peano {
         if n <= 0 {
             Zero
         } else {
@@ -22,21 +22,21 @@ impl Peano {
         }
     }
 
-    fn to_int(&self) -> i64 {
+    pub fn to_int(&self) -> i64 {
         match self {
             Zero => 0,
             Succ(n) => 1 + n.to_int(),
         }
     }
 
-    fn add(&self, other: &Peano) -> Peano {
+    pub fn add(&self, other: &Peano) -> Peano {
         match self {
             Zero => other.clone(),
             Succ(n) => Succ(Box::new(n.add(other))),
         }
     }
 
-    fn sub(&self, other: &Peano) -> Peano {
+    pub fn sub(&self, other: &Peano) -> Peano {
         match (self, other) {
             (Zero, _) => Zero,
             (Succ(_), Zero) => self.clone(),
@@ -44,28 +44,28 @@ impl Peano {
         }
     }
 
-    fn mul(&self, other: &Peano) -> Peano {
+    pub fn mul(&self, other: &Peano) -> Peano {
         match self {
             Zero => Zero,
             Succ(n) => n.mul(other).add(other),
         }
     }
 
-    fn even(&self) -> bool {
+    pub fn even(&self) -> bool {
         match self {
             Zero => true,
             Succ(n) => !n.even(),
         }
     }
 
-    fn odd(&self) -> bool {
+    pub fn odd(&self) -> bool {
         match self {
             Zero => false,
             Succ(n) => n.even(),
         }
     }
 
-    fn div(&self, other: &Peano) -> Result<Peano, PeanoError> {
+    pub fn div(&self, other: &Peano) -> Result<Peano, PeanoError> {
         match self {
             Zero => Ok(Zero),
             Succ(_n) => {
@@ -86,7 +86,7 @@ impl Peano {
         }
     }
 
-    fn compare(&self, other: &Peano) -> Ordering {
+    pub fn compare(&self, other: &Peano) -> Ordering {
         match (self, other) {
             (Zero, Zero) => Equal,
             (Zero, _) => Less,
