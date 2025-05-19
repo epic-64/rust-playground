@@ -11,5 +11,10 @@ fn main() {
         Ok(result) => println!("3 / 5 = {:?}", result.to_int()),
         Err(e) => println!("Error: {:?}", e),
     }
+
+    assert_eq!(
+        a.add(&b),
+        Peano::add(&a, &b)
+    );
 }
 
