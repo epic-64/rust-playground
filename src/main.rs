@@ -102,7 +102,6 @@ fn main() {
 
 #[cfg(test)]
 mod tests {
-    use std::cmp::Ordering::Greater;
     use super::*;
 
     #[test]
@@ -110,6 +109,7 @@ mod tests {
         assert_eq!(Peano::from_int(0), Zero);
         assert_eq!(Peano::from_int(1), Succ(Box::new(Zero)));
         assert_eq!(Peano::from_int(2), Succ(Box::new(Succ(Box::new(Zero)))));
+        assert_eq!(Peano::from_int(3), Succ(Box::new(Succ(Box::new(Succ(Box::new(Zero)))))));
     }
 
     #[test]
@@ -117,34 +117,40 @@ mod tests {
         assert_eq!(Zero.to_int(), 0);
         assert_eq!(Succ(Box::new(Zero)).to_int(), 1);
         assert_eq!(Succ(Box::new(Succ(Box::new(Zero)))).to_int(), 2);
+        assert_eq!(Succ(Box::new(Succ(Box::new(Succ(Box::new(Zero)))))).to_int(), 3);
     }
 
     #[test]
     fn test_add() {
-        let a = Peano::from_int(2);
-        let b = Peano::from_int(3);
-        assert_eq!(a.add(&b), Peano::from_int(5));
+        struct TestData { a: Peano, b: Peano, expected: Peano }
+
+        let test_data = vec![
+            TestData { a: Peano::from_int(2), b: Peano::from_int(3), expected: Peano::from_int(5) },
+            TestData { a: Peano::from_int(0), b: Peano::from_int(3), expected: Peano::from_int(3) },
+            TestData { a: Peano::from_int(3), b: Peano::from_int(0), expected: Peano::from_int(3) },
+            TestData { a: Peano::from_int(5), b: Peano::from_int(7), expected: Peano::from_int(12) },
+        ];
+
+        for TestData{ a, b, expected } in test_data {
+            let result = a.add(&b);
+            assert_eq!(result, expected, "Failed for a: {:?}, b: {:?}", a, b);
+        }
     }
 
     #[test]
     fn test_mul() {
-        let a = Peano::from_int(2);
-        let b = Peano::from_int(3);
-        assert_eq!(a.mul(&b), Peano::from_int(6));
-    }
+        struct TestData { a: Peano, b: Peano, expected: Peano }
 
-    #[test]
-    fn test_mul_2() {
-        let a = Peano::from_int(0);
-        let b = Peano::from_int(3);
-        assert_eq!(a.mul(&b), Peano::from_int(0));
-    }
+        let test_data = vec![
+            TestData { a: Peano::from_int(2), b: Peano::from_int(3), expected: Peano::from_int(6) },
+            TestData { a: Peano::from_int(0), b: Peano::from_int(3), expected: Peano::from_int(0) },
+            TestData { a: Peano::from_int(5), b: Peano::from_int(7), expected: Peano::from_int(35) },
+        ];
 
-    #[test]
-    fn test_mul_3() {
-        let a = Peano::from_int(5);
-        let b = Peano::from_int(7);
-        assert_eq!(a.mul(&b), Peano::from_int(35));
+        for TestData{ a, b, expected } in test_data {
+            let result = a.mul(&b);
+            assert_eq!(result, expected, "Failed for a: {:?}, b: {:?}", a, b);
+        }
     }
 
     #[test]
