@@ -8,6 +8,7 @@ enum Peano {
     Succ(Box<Peano>),
 }
 
+#[derive(Debug, PartialEq, Eq)]
 enum PeanoError {
     DivisionByZero,
 }
@@ -163,60 +164,38 @@ mod tests {
     }
 
     #[test]
-    fn test_div_1() {
-        let a = Peano::from_int(6);
-        let b = Peano::from_int(2);
+    fn test_div() {
+        struct TestData { a: Peano, b: Peano, expected: Result<Peano, PeanoError> }
 
-        if let Ok(result) = a.div(&b) {
-            assert_eq!(result, Peano::from_int(3));
-        } else {
-            panic!("Division failed");
-        }
-    }
+        let test_data = vec![
+            TestData { a: Peano::from_int(6), b: Peano::from_int(2), expected: Ok(Peano::from_int(3)) },
+            TestData { a: Peano::from_int(6), b: Peano::from_int(0), expected: Err(PeanoError::DivisionByZero) },
+            TestData { a: Peano::from_int(17), b: Peano::from_int(4), expected: Ok(Peano::from_int(4)) },
+            TestData { a: Peano::from_int(3), b: Peano::from_int(3), expected: Ok(Peano::from_int(1)) },
+        ];
 
-    #[test]
-    fn test_div_2() {
-        let a = Peano::from_int(6);
-        let b = Peano::from_int(0);
-
-        if let Err(PeanoError::DivisionByZero) = a.div(&b) {
-            // expected outcome
-        } else {
-            panic!("Expected division by zero error");
-        }
-    }
-
-    #[test]
-    fn test_div_3() {
-        let a = Peano::from_int(17);
-        let b = Peano::from_int(4);
-
-        if let Ok(result) = a.div(&b) {
-            assert_eq!(result, Peano::from_int(4));
-        } else {
-            panic!("Division failed");
-        }
-    }
-
-    #[test]
-    fn test_div_4() {
-        let a = Peano::from_int(3);
-        let b = Peano::from_int(3);
-
-        if let Ok(result) = a.div(&b) {
-            assert_eq!(result, Peano::from_int(1));
-        } else {
-            panic!("Division failed");
+        for TestData{ a, b, expected } in test_data {
+            let result = a.div(&b);
+            assert_eq!(result, expected, "Failed for a: {:?}, b: {:?}", a, b);
         }
     }
 
     #[test]
     fn test_compare() {
-        let a = Peano::from_int(5);
-        let b = Peano::from_int(3);
-        assert_eq!(a.compare(&b), Greater);
-        assert_eq!(b.compare(&a), Less);
-        assert_eq!(a.compare(&a), Equal);
+        struct TestData { a: Peano, b: Peano, expected: Ordering }
+
+        let test_data = vec![
+            TestData { a: Peano::from_int(0), b: Peano::from_int(0), expected: Equal },
+            TestData { a: Peano::from_int(1), b: Peano::from_int(0), expected: Greater },
+            TestData { a: Peano::from_int(0), b: Peano::from_int(1), expected: Less },
+            TestData { a: Peano::from_int(2), b: Peano::from_int(3), expected: Less },
+            TestData { a: Peano::from_int(3), b: Peano::from_int(2), expected: Greater },
+        ];
+
+        for TestData{ a, b, expected } in test_data {
+            let result = a.compare(&b);
+            assert_eq!(result, expected, "Failed for a: {:?}, b: {:?}", a, b);
+        }
     }
 }
 
