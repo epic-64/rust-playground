@@ -121,10 +121,11 @@ mod tests {
         struct TestData { a: Peano, b: Peano, expected: Peano }
 
         let test_data = vec![
+            TestData { a: Peano::from_int(0), b: Peano::from_int(0), expected: Peano::from_int(0) },
+            TestData { a: Peano::from_int(1), b: Peano::from_int(0), expected: Peano::from_int(1) },
+            TestData { a: Peano::from_int(0), b: Peano::from_int(1), expected: Peano::from_int(1) },
             TestData { a: Peano::from_int(2), b: Peano::from_int(3), expected: Peano::from_int(5) },
-            TestData { a: Peano::from_int(0), b: Peano::from_int(3), expected: Peano::from_int(3) },
-            TestData { a: Peano::from_int(3), b: Peano::from_int(0), expected: Peano::from_int(3) },
-            TestData { a: Peano::from_int(5), b: Peano::from_int(7), expected: Peano::from_int(12) },
+            TestData { a: Peano::from_int(3), b: Peano::from_int(2), expected: Peano::from_int(5) },
         ];
 
         for TestData{ a, b, expected } in test_data {
@@ -138,9 +139,11 @@ mod tests {
         struct TestData { a: Peano, b: Peano, expected: Peano }
 
         let test_data = vec![
+            TestData { a: Peano::from_int(0), b: Peano::from_int(0), expected: Peano::from_int(0) },
+            TestData { a: Peano::from_int(1), b: Peano::from_int(0), expected: Peano::from_int(0) },
+            TestData { a: Peano::from_int(0), b: Peano::from_int(1), expected: Peano::from_int(0) },
             TestData { a: Peano::from_int(2), b: Peano::from_int(3), expected: Peano::from_int(6) },
-            TestData { a: Peano::from_int(0), b: Peano::from_int(3), expected: Peano::from_int(0) },
-            TestData { a: Peano::from_int(5), b: Peano::from_int(7), expected: Peano::from_int(35) },
+            TestData { a: Peano::from_int(3), b: Peano::from_int(2), expected: Peano::from_int(6) },
         ];
 
         for TestData{ a, b, expected } in test_data {
@@ -170,10 +173,14 @@ mod tests {
         struct TestData { a: Peano, b: Peano, expected: Result<Peano, PeanoError> }
 
         let test_data = vec![
+            TestData { a: Peano::from_int(0), b: Peano::from_int(0), expected: Err(PeanoError::DivisionByZero) },
+            TestData { a: Peano::from_int(1), b: Peano::from_int(0), expected: Err(PeanoError::DivisionByZero) },
+            TestData { a: Peano::from_int(0), b: Peano::from_int(1), expected: Ok(Peano::from_int(0)) },
+            TestData { a: Peano::from_int(1), b: Peano::from_int(1), expected: Ok(Peano::from_int(1)) },
+            TestData { a: Peano::from_int(2), b: Peano::from_int(1), expected: Ok(Peano::from_int(2)) },
+            TestData { a: Peano::from_int(2), b: Peano::from_int(2), expected: Ok(Peano::from_int(1)) },
             TestData { a: Peano::from_int(6), b: Peano::from_int(2), expected: Ok(Peano::from_int(3)) },
-            TestData { a: Peano::from_int(6), b: Peano::from_int(0), expected: Err(PeanoError::DivisionByZero) },
-            TestData { a: Peano::from_int(17), b: Peano::from_int(4), expected: Ok(Peano::from_int(4)) },
-            TestData { a: Peano::from_int(3), b: Peano::from_int(3), expected: Ok(Peano::from_int(1)) },
+            TestData { a: Peano::from_int(9), b: Peano::from_int(2), expected: Ok(Peano::from_int(4)) },
         ];
 
         for TestData{ a, b, expected } in test_data {
